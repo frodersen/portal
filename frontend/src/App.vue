@@ -1,27 +1,11 @@
 <template>
-  <div id="app">
-    <LoginForm />
+  <div id="nav">
+    <router-link to="/"></router-link>
   </div>
+  <router-view />
 </template>
 
-<script>
-import LoginForm from './components/LoginForm.vue'
-
-export default {
-  name: 'App',
-  components: {
-    LoginForm
-  }
-}
-</script>
+<script></script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>

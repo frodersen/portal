@@ -4,9 +4,9 @@
         <h1>NTNUI PORTAL</h1>
         <form @submit.prevent="login">
           <label for="phone">TELEFON →</label>
-          <input v-model="phone" id="phone" type="tel" pattern="[0-9]{8}">
+          <input v-model="phone" id="phone" type="tel" placeholder="Telefonnummer">
           <label for="password">PASSORD</label>
-          <input v-model="password" id="password" type="password">
+          <input v-model="password" id="password" type="password" placeholder="Passord">
           <button type="submit">LOGG INN</button>
           <p><a href="#">GLEMT PASSORD</a> | <a href="#">AKTIVER BRUKER</a></p>
         </form>
@@ -15,20 +15,41 @@
   </template>
   
   <script>
-  export default {
-    data() {
-      return {
-        phone: '',
-        password: ''
+import { ref } from 'vue';
+import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+export default {
+  setup() {
+    const phone = ref('');
+    const password = ref('');
+    const router = useRouter();
+
+    const login = async () => {
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/auth/login/', {
+          phone_number: phone.value,
+          password: password.value,
+        });
+        // Store the access token securely, consider using HttpOnly cookies
+        // For this example, it's stored in localStorage but this is NOT recommended for production
+        localStorage.setItem('access_token', response.data.access);
+        router.push({ name: 'UserProfile' }); // Navigate to UserProfile route after login
+      } catch (error) {
+        console.error('Login error:', error.response.data);
+        // Handle login error, show user feedback
       }
-    },
-    methods: {
-      login() {
-        // Send a request to your API to log in the user
-      }
-    }
-  }
-  </script>
+    };
+
+    return {
+      phone,
+      password,
+      login,
+    };
+  },
+};
+</script>
+
   
   <style scoped>
   .login-page {
