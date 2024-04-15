@@ -1,1 +1,18 @@
 *.pyc
+
+# Dependency directories
+node_modules/
+
+# Log files
+*.log
+
+# Environmental variables
+.env
+
+# Build output
+/dist
+
+# Other common directories to ignore
+/temp
+/backup
+
