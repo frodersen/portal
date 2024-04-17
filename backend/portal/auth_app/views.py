@@ -42,6 +42,7 @@ import requests
 from django.conf import settings
 
 class UserView(views.APIView):
+    authentication_classes = []
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger = logging.getLogger(__name__)
