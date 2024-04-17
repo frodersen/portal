@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-box">
       <h1>NTNUI PORTAL</h1>
-      <form @submit.prevent="login">
+      <form @submit.prevent="getToken">
         <label for="phone">TELEFON →</label>
         <input
           v-model="phone"
@@ -20,6 +20,7 @@
         <button type="submit">LOGG INN</button>
         <p><a href="#">GLEMT PASSORD</a> | <a href="#">AKTIVER BRUKER</a></p>
       </form>
+      <p v-if="error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -27,34 +28,71 @@
 <script>
 import { ref } from "vue";
 import axios from "axios";
-import { useRouter } from "vue-router";
 
 export default {
   setup() {
     const phone = ref("");
     const password = ref("");
-    const router = useRouter();
+    const error = ref("");
 
-    const login = async () => {
+    const getToken = async () => {
       try {
-        const response = await axios.post("http://127.0.0.1:8000/auth/login/", {
-          phone_number: phone.value,
-          password: password.value,
+        const response = await axios({
+          method: "post",
+          url: "http://127.0.0.1:8000/auth/login/",
+          data: {
+            phone_number: phone.value,
+            password: password.value,
+          },
+          validateStatus: (status) => status < 500,
         });
-        // Store the access token securely, consider using HttpOnly cookies
-        // For this example, it's stored in localStorage but this is NOT recommended for production
-        localStorage.setItem("access_token", response.data.access);
-        router.push({ name: "UserProfile" }); // Navigate to UserProfile route after login
+
+        if (response.status === 401) {
+          error.value = "Unauthorized, incorrect credentials";
+          return;
+        }
+
+        if (response.status === 200) {
+          localStorage.setItem("access_token", response.data.access);
+          await getUserData(response.data.access);
+        }
+      } catch (err) {
+        error.value = "Server error or network issue";
+        console.error("Login error:", err);
+      }
+    };
+
+    const getUserData = async (token) => {
+      try {
+        const userProfileResponse = await axios({
+          method: "get",
+          url: "http://127.0.0.1:8000/auth/user-profile/",
+          headers: { Authorization: `Bearer ${token}` },
+          validateStatus: (status) => status < 500,
+        });
+
+        if (userProfileResponse.status == 403) {
+          console.log("Invalid or expired token.");
+          return;
+        }
+
+        if (userProfileResponse.status === 200) {
+          console.log(userProfileResponse.data);
+          // Redirect user back to the client which they came from
+        } else {
+          error.value = "Failed to fetch user profile";
+        }
       } catch (error) {
-        console.error("Login error:", error.response.data);
-        // Handle login error, show user feedback
+        console.error("Error fetching user data:", error);
+        error.value = "Error fetching user data";
       }
     };
 
     return {
       phone,
       password,
-      login,
+      error,
+      getToken,
     };
   },
 };
