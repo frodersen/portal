@@ -1,58 +1,59 @@
 <template>
   <div v-if="profile" class="user-profile">
     <h1>User Profile</h1>
-    <ul>
-      <li><strong>First Name:</strong> {{ profile.first_name }}</li>
-      <li><strong>Last Name:</strong> {{ profile.last_name }}</li>
-      <li><strong>Email:</strong> {{ profile.email }}</li>
-      <li><strong>NTNUI No:</strong> {{ profile.ntnui_no }}</li>
-    </ul>
+    <!-- Display the profile as JSON -->
+    <pre>{{ jsonProfile }}</pre>
   </div>
   <p v-else-if="isLoading">Loading profile...</p>
   <p v-else>{{ error }}</p>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
+import { ref, onMounted, computed } from "vue";
+import axios from "axios";
 
 export default {
   setup() {
     const profile = ref(null);
-    const error = ref('');
+    const error = ref("");
     const isLoading = ref(true);
 
     const fetchUserProfile = async () => {
+      isLoading.value = true;
       try {
-        const response = await axios.get('http://127.0.0.1:8000/auth/user-profile/', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-          },
-        });
-        if (response.status_code === 200) {
-          profile.value = response.data;
-          isLoading.value = false;
-        } else {
-          throw new Error(`Failed to fetch user profile: ${response.status_code}`);
-        }
+        const response = await axios.get(
+          "http://127.0.0.1:8000/auth/user-profile/",
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        );
+        profile.value = response.data;
+        error.value = "";
       } catch (err) {
-        console.error('Error fetching profile:', err.response ? err.response.data : err);
-        error.value = 'Error fetching profile: ' + (err.response ? err.response.data.error : err.message);
-        isLoading.value = false;
+        console.error("Error fetching profile:", err);
+        error.value = "Failed to fetch profile.";
+        profile.value = null;
       }
+      isLoading.value = false;
     };
 
     onMounted(fetchUserProfile);
+
+    const jsonProfile = computed(() => {
+      return profile.value ? JSON.stringify(profile.value, null, 2) : "{}";
+    });
 
     return {
       profile,
       error,
       isLoading,
+      jsonProfile,
     };
   },
 };
 </script>
-
 
 <style scoped>
 .user-profile {
@@ -69,21 +70,11 @@ export default {
   text-align: center;
 }
 
-.user-profile ul {
-  list-style: none;
-  padding: 0;
-}
-
-.user-profile li {
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.user-profile li:last-child {
-  border-bottom: none;
-}
-
-.user-profile strong {
-  color: #555;
+pre {
+  background-color: #f4f4f4;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  overflow: auto;
 }
 </style>
