@@ -54,6 +54,8 @@ export default {
         }
 
         if (response.status === 200) {
+          error.value = "Login successful! Redirecting..."; 
+          setTimeout(() => { error.value = ""; }, 3000); 
           const redirectUrl = getQueryParam("redirect_url");
           window.location.href = decodeURIComponent(redirectUrl);
         }
