@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from datetime import timedelta
-import os
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,8 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
 ]
+
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # CORS should come right after SecurityMiddleware
@@ -57,6 +57,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",  # The origin for your Vue.js frontend
     "http://127.0.0.1:8080",  # Include this if you're testing locally
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'portal.urls'
 
@@ -145,43 +147,3 @@ SIMPLE_JWT = {
 }
 
 NTNUI_API_URL = 'https://api.ntnui.no'  # Replace with actual API URL
-
-FORMATTERS = (
-    {
-        "verbose": {
-            "format": "{levelname} {asctime:s} {threadName} {thread:d} {module} {filename} {lineno:d} {name} {funcName} {process:d} {message}",
-            "style": "{",
-        },
-        "simple": {
-            "format": "{levelname} {asctime:s} {module} {filename} {lineno:d} {funcName} {message}",
-            "style": "{",
-        },
-    },
-)
-
-
-HANDLERS = {
-    "console_handler": {
-        "class": "logging.StreamHandler",
-        "formatter": "simple",
-    },
-}
-
-LOGGERS = (
-    {
-        "django": {
-            "handlers": ["console_handler"],
-            "level": "INFO",
-            "propagate": False,
-        },
-    },
-)
-
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": FORMATTERS[0],
-    "handlers": HANDLERS,
-    "loggers": LOGGERS[0],
-}

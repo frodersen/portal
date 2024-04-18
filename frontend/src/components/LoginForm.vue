@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-box">
       <h1>NTNUI PORTAL</h1>
-      <form @submit.prevent="getToken">
+      <form @submit.prevent="login">
         <label for="phone">TELEFON →</label>
         <input
           v-model="phone"
@@ -35,15 +35,16 @@ export default {
     const password = ref("");
     const error = ref("");
 
-    const getToken = async () => {
+    const login = async () => {
       try {
         const response = await axios({
           method: "post",
-          url: "http://127.0.0.1:8000/auth/login/",
+          url: "http://localhost:8000/auth/login/",
           data: {
             phone_number: phone.value,
             password: password.value,
           },
+          withCredentials: true,
           validateStatus: (status) => status < 500,
         });
 
@@ -53,8 +54,8 @@ export default {
         }
 
         if (response.status === 200) {
-          localStorage.setItem("access_token", response.data.access);
-          await getUserData(response.data.access);
+          const redirectUrl = getQueryParam("redirect_url");
+          window.location.href = decodeURIComponent(redirectUrl);
         }
       } catch (err) {
         error.value = "Server error or network issue";
@@ -62,37 +63,16 @@ export default {
       }
     };
 
-    const getUserData = async (token) => {
-      try {
-        const userProfileResponse = await axios({
-          method: "get",
-          url: "http://127.0.0.1:8000/auth/user-profile/",
-          headers: { Authorization: `Bearer ${token}` },
-          validateStatus: (status) => status < 500,
-        });
-
-        if (userProfileResponse.status == 403) {
-          console.log("Invalid or expired token.");
-          return;
-        }
-
-        if (userProfileResponse.status === 200) {
-          console.log(userProfileResponse.data);
-          // Redirect user back to the client which they came from
-        } else {
-          error.value = "Failed to fetch user profile";
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        error.value = "Error fetching user data";
-      }
-    };
+    function getQueryParam(param) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
+    }
 
     return {
       phone,
       password,
       error,
-      getToken,
+      login,
     };
   },
 };
