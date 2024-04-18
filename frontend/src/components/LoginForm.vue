@@ -3,6 +3,12 @@
     <div class="login-box">
       <h1>NTNUI PORTAL</h1>
       <form @submit.prevent="login">
+        <label for="countryCode">Country Code →</label>
+        <select v-model="countryCode" id="countryCode">
+          <option value="+47">Norway (+47)</option>
+          <option value="+1">US (+1)</option>
+        </select>
+
         <label for="phone">TELEFON →</label>
         <input
           v-model="phone"
@@ -31,9 +37,11 @@ import axios from "axios";
 
 export default {
   setup() {
+    const countryCode = ref("+47"); 
     const phone = ref("");
     const password = ref("");
     const error = ref("");
+    const phone_number = ref("");
 
     const login = async () => {
       try {
@@ -41,7 +49,7 @@ export default {
           method: "post",
           url: "http://localhost:8000/auth/login/",
           data: {
-            phone_number: phone.value,
+            phone_number: countryCode.value + phone.value,
             password: password.value,
           },
           withCredentials: true,
@@ -69,6 +77,8 @@ export default {
     }
 
     return {
+      phone_number,
+      countryCode,
       phone,
       password,
       error,
