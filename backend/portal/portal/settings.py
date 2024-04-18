@@ -41,15 +41,24 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # CORS should come right after SecurityMiddleware
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
+    'django.middleware.common.CommonMiddleware',  # Note: CommonMiddleware can affect CORS headers.
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # The origin for your Vue.js frontend
+    "http://127.0.0.1:8080",  # Include this if you're testing locally
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'portal.urls'
 

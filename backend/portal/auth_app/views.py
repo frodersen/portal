@@ -1,32 +1,53 @@
-from django.shortcuts import render
+import logging
+from rest_framework import views, status
+from rest_framework.response import Response
 import requests
 from django.conf import settings
-from rest_framework import status, views
-from rest_framework.response import Response
 
+from django.http import JsonResponse
+from rest_framework import views, status
+from rest_framework.response import Response
+import requests
+from django.conf import settings
+from django.core.signing import Signer
+
+import json
+import urllib.parse
+from django.core.signing import Signer
+from django.http import HttpResponse
+from rest_framework import views, status
+from rest_framework.response import Response
+import base64
 class LoginView(views.APIView):
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
         password = request.data.get('password')
 
-        # Prepare the payload for the API request
         payload = {
             'phone_number': phone_number,
             'password': password,
         }
 
-        # Make the POST request to NTNUI API
         response = requests.post(
             f'{settings.NTNUI_API_URL}/token/',
             data=payload,
         )
 
-        # Check if the response is successful
-        if response.status_code == 200:
-            # Here you'd handle the response and create a session
-            # or a token that your system can use for SSO.
-            return Response(response.json(), status=status.HTTP_200_OK)
-        else:
-            # Handle failed authentication
-            return Response(response.json(), status=response.status_code)
+        if response.status_code == 401:
+            return Response(response.json(), status=status.HTTP_401_UNAUTHORIZED) 
 
+        if response.status_code == 200:
+
+            # Create cookie with token av value
+            access_token = response.json()['access']
+
+            cookie_response = Response(access_token, status=status.HTTP_200_OK)
+            cookie_response.set_cookie(
+                'access_token',
+                max_age=3600,
+                value=access_token,
+                httponly=True,
+                secure=True,
+                samesite="Lax",
+            )
+            return cookie_response
