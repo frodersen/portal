@@ -26,7 +26,7 @@
         <button type="submit">LOGG INN</button>
         <p><a href="#">GLEMT PASSORD</a> | <a href="#">AKTIVER BRUKER</a></p>
       </form>
-      <p v-if="error">{{ error }}</p>
+      <p class="error-message" v-if="error">{{ error }}</p>
     </div>
   </div>
 </template>
@@ -90,7 +90,7 @@ export default {
 
 <style scoped>
 .login-page {
-  background-color: #007bff;
+  background-color: #4b6b8b; /* Adjusted to match the blue background */
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -98,39 +98,66 @@ export default {
 }
 
 .login-box {
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 5px;
-  width: 300px;
+  background-color: #ffffff; /* White background for the form box */
+  padding: 40px;
+  border-radius: 10px; /* Slightly more rounded corners */
+  width: 340px; /* Increased width */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft box shadow */
+  color: #2c3e50; /* Darker text color */
 }
 
 .login-box h1 {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px; /* More space below the heading */
+  color: #000; /* Black color for the text */
+  font-size: 24px; /* Larger font size */
 }
 
 .login-box label {
   display: block;
   margin-bottom: 5px;
+  color: #000; /* Black color for the text */
+  font-weight: bold; /* Bold font for labels */
 }
 
+.login-box select,
 .login-box input[type="tel"],
 .login-box input[type="password"] {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 15px; /* Increased padding */
+  margin-bottom: 15px; /* Increased margin */
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #d3d3d3; /* Lighter border color */
+  background: #f7f7f7; /* Light grey background */
+  color: #333; /* Dark grey text */
+}
+
+.login-box select {
+  -webkit-appearance: none; /* Removes default styling of select on WebKit browsers */
+  -moz-appearance: none; /* Removes default styling of select on Firefox */
+  appearance: none; /* Removes default arrow from select */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="#333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Add custom arrow */
+  background-repeat: no-repeat;
+  background-position-x: 95%;
+  background-position-y: 50%;
 }
 
 .login-box button[type="submit"] {
-  background-color: #007bff;
+  background-color: #007bff; /* Matching the blue button color */
   color: #fff;
-  padding: 10px;
+  padding: 15px; /* Increased padding */
+  margin-top: 10px; /* Added margin to the top */
   border: none;
   border-radius: 5px;
   width: 100%;
   cursor: pointer;
+  font-size: 16px; /* Larger font size */
+  font-weight: bold; /* Bold font */
+  transition: background-color 0.3s; /* Transition for a hover effect */
+}
+
+.login-box button[type="submit"]:hover {
+  background-color: #0056b3; /* Darker blue on hover */
 }
 
 .login-box p {
@@ -141,5 +168,16 @@ export default {
 .login-box p a {
   color: #007bff;
   text-decoration: none;
+  margin: 0 5px; /* Spacing between links */
 }
+
+.login-box p a:hover {
+  text-decoration: underline; /* Underline on hover */
+}
+
+.error-message {
+  color: #ff0000; /* Red color for error messages */
+  text-align: center;
+}
+
 </style>
