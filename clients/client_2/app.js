@@ -1,6 +1,5 @@
 require("dotenv").config();
 const express = require("express");
-const session = require("express-session");
 const axios = require("axios");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -13,53 +12,83 @@ app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(
-  session({
-    secret: "your secret key",
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }, // Use secure: true in production
-  })
-);
 
-// INITIAL PAGE
-app.get("/", (req, res) => {
-  res.render("index");
+app.get("/", async (req, res) => {
+  const accessToken = req.cookies["access_token"];
+
+  if (!accessToken) {
+    return res.render("index");
+  }
+
+  try {
+    const verifyResponse = await axios.post(
+      "https://dev.api.ntnui.no/token/verify/",
+      { token: accessToken }
+    );
+
+    if (verifyResponse.status === 401) {
+      res.clearCookie("access_token");
+      return res.render("index");
+    }
+
+    if (verifyResponse.status === 200) {
+      // What if token is valid, but user is NOT authorized (should not have access to protected resource)?
+      res.render("authorized");
+    }
+
+    console.log("Unexpected status code received:", verifyResponse.status);
+    res.clearCookie("access_token");
+    return res.render("index");
+  } catch (error) {
+    console.error(
+      "Token verification network error:",
+      error.response?.status,
+      error.message
+    );
+    res.clearCookie("access_token");
+    return res.render("index", {
+      message: "Network error during authentication. Please try again.",
+    });
+  }
 });
 
-app.get("/auth/callback", function (req, res) {
+app.get("/auth/callback", async function (req, res) {
+  const accessToken = req.cookies["access_token"];
+
+  if (!accessToken) {
+    return res.render("index");
+  }
+
   try {
-    var accessToken = req.cookies["access_token"];
-
-    axios
-      .get("https://dev.api.ntnui.no/users/profile/", {
+    const response = await axios.get(
+      "https://dev.api.ntnui.no/users/profile/",
+      {
         headers: { Authorization: "Bearer " + accessToken },
-      })
-      .then(function (response) {
-        var userMemberships = response.data.memberships;
-        var clientGroupName = process.env.CLIENT_GROUP_NAME;
-        var isMember = false;
+      }
+    );
 
-        for (var i = 0; i < userMemberships.length; i++) {
-          if (userMemberships[i].slug === clientGroupName) {
-            isMember = true;
-            break;
-          }
-        }
+    const userMemberships = response.data.memberships;
+    const clientGroupName = process.env.CLIENT_GROUP_NAME;
+    let isMember = false;
 
-        if (isMember) {
-          res.render("authorized");
-        } else {
-          res.render("unauthorized");
-        }
-      })
-      .catch(function (error) {
-        console.error("Error fetching user profile:", error);
-        res.status(500).send("Failed to fetch user profile data");
-      });
+    for (let i = 0; i < userMemberships.length; i++) {
+      if (userMemberships[i].slug === clientGroupName) {
+        isMember = true;
+        break;
+      }
+    }
+
+    if (isMember) {
+      res.render("authorized");
+    } else {
+      res.render("unauthorized");
+    }
   } catch (error) {
-    console.error("Error in processing:", error);
-    res.status(500).send("Server error");
+    console.error(
+      "Error fetching user profile:",
+      error.response ? error.response.data : error
+    );
+    res.status(500).send("Failed to fetch user profile data");
   }
 });
 

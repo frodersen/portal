@@ -8,11 +8,15 @@
   <body>
     <div>
       <h2>Login</h2>
-      <button
-        onclick="window.location.href='http:\//localhost:8080/auth/login?redirect_url=' + encodeURIComponent('http://localhost:3001/auth/callback')"
-      >
-        Login
-      </button>
+      <button onclick="login()">Login</button>
     </div>
+
+    <script>
+      function login() {
+        window.location.href =
+          "http://localhost:8080/auth/login?redirect_url=" +
+          encodeURIComponent("http://localhost:3001/auth/callback");
+      }
+    </script>
   </body>
 </html>
