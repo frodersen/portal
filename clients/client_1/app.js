@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const axios = require("axios");
-const path = require("path");
 const cookieParser = require("cookie-parser");
 
 const app = express();
@@ -26,38 +25,11 @@ app.get("/", async (req, res) => {
       { token: accessToken }
     );
 
-    if (verifyResponse.status === 401) {
+    if (verifyResponse.status !== 200) {
       res.clearCookie("access_token");
       return res.render("index");
     }
 
-    if (verifyResponse.status === 200) {
-      // What if token is valid, but user is NOT authorized (should not have access to protected resource)?
-      res.render("authorized");
-    }
-
-    return res.render("index");
-  } catch (error) {
-    console.error(
-      "Token verification network error:",
-      error.response?.status,
-      error.message
-    );
-    res.clearCookie("access_token");
-    return res.render("index", {
-      message: "Network error during authentication. Please try again.",
-    });
-  }
-});
-
-app.get("/auth/callback", async function (req, res) {
-  const accessToken = req.cookies["access_token"];
-
-  if (!accessToken) {
-    return res.render("index");
-  }
-
-  try {
     const response = await axios.get(
       "https://dev.api.ntnui.no/users/profile/",
       {
@@ -67,14 +39,7 @@ app.get("/auth/callback", async function (req, res) {
 
     const userMemberships = response.data.memberships;
     const clientGroupName = process.env.CLIENT_GROUP_NAME;
-    let isMember = false;
-
-    for (let i = 0; i < userMemberships.length; i++) {
-      if (userMemberships[i].slug === clientGroupName) {
-        isMember = true;
-        break;
-      }
-    }
+    let isMember = userMemberships.some((m) => m.slug === clientGroupName);
 
     if (isMember) {
       res.render("authorized");
@@ -83,10 +48,11 @@ app.get("/auth/callback", async function (req, res) {
     }
   } catch (error) {
     console.error(
-      "Error fetching user profile:",
+      "Error during authentication or profile fetching:",
       error.response ? error.response.data : error
     );
-    res.status(500).send("Failed to fetch user profile data");
+    res.clearCookie("access_token");
+    res.status(500).send("Failed to authenticate or fetch profile data.");
   }
 });
 

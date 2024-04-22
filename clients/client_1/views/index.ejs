@@ -15,7 +15,7 @@
       function login() {
         window.location.href =
           "http://localhost:8080/auth/login?redirect_url=" +
-          encodeURIComponent("http://localhost:3001/auth/callback");
+          encodeURIComponent(window.location.origin);
       }
     </script>
   </body>
