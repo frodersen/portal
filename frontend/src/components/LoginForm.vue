@@ -3,33 +3,38 @@
     <div class="login-box">
       <h1>NTNUI PORTAL</h1>
       <form @submit.prevent="login">
-        <label for="countryCode">Country Code →</label>
-        <select v-model="countryCode" id="countryCode">
-          <option value="+47">Norway (+47)</option>
-          <option value="+1">US (+1)</option>
-        </select>
-
-        <label for="phone">TELEFON →</label>
-        <input
-          v-model="phone"
-          id="phone"
-          type="tel"
-          placeholder="Telefonnummer"
-        />
+        <!-- Country code and phone input container -->
+        <div class="input-group">
+          <select v-model="countryCode" id="countryCode" class="country-code">
+            <option value="+47">Norge (+47)</option>
+            <!-- other country options -->
+          </select>
+          <input
+            v-model="phone"
+            id="phone"
+            type="tel"
+            class="phone-number"
+            placeholder="Telefonnummer"
+          />
+        </div>
         <label for="password">PASSORD</label>
         <input
           v-model="password"
           id="password"
           type="password"
+          class="password-input"
           placeholder="Passord"
         />
-        <button type="submit">LOGG INN</button>
-        <p><a href="#">GLEMT PASSORD</a> | <a href="#">AKTIVER BRUKER</a></p>
+        <button type="submit" class="login-button">LOGG INN</button>
+        <div class="links">
+          <a href="#">GLEMT PASSORD</a> | <a href="#">AKTIVER BRUKER</a>
+        </div>
       </form>
-      <p class="error-message" v-if="error">{{ error }}</p>
     </div>
   </div>
 </template>
+
+
 
 <script>
 import { ref } from "vue";
@@ -178,6 +183,20 @@ export default {
 .error-message {
   color: #ff0000; /* Red color for error messages */
   text-align: center;
+}
+.input-group {
+  display: flex;
+  justify-content: space-between; /* Adjust as needed */
+  margin-bottom: 15px; /* Increased margin */
+}
+
+.country-code {
+  flex: 1;
+  margin-right: 5px; /* Spacing between select and input */
+}
+
+.phone-number {
+  flex: 3;
 }
 
 </style>
