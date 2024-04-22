@@ -29,7 +29,7 @@ class LoginView(views.APIView):
         }
 
         response = requests.post(
-            f'{settings.NTNUI_API_URL}/token/',
+            f'{settings.NTNUI_DEV_API_URL}/token/',
             data=payload,
         )
 
