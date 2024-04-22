@@ -32,7 +32,7 @@ app.get("/auth/callback", function (req, res) {
     var accessToken = req.cookies["access_token"];
 
     axios
-      .get("https://api.ntnui.no/users/profile/", {
+      .get("https://dev.api.ntnui.no/users/profile/", {
         headers: { Authorization: "Bearer " + accessToken },
       })
       .then(function (response) {

@@ -146,4 +146,4 @@ SIMPLE_JWT = {
     # ... any other JWT settings you want to override
 }
 
-NTNUI_API_URL = 'https://api.ntnui.no'  # Replace with actual API URL
+NTNUI_DEV_API_URL = 'https://dev.api.ntnui.no'  # Replace with actual API URL
