@@ -3,9 +3,15 @@
       <form @submit.prevent="login">
         <!-- Country code and phone input container -->
         <div class="input-group">
-          <select v-model="countryCode" id="countryCode" class="country-code">
-            <option value="+47">+47</option>
-            <!-- other country options -->
+          <select v-model="countryCode" class="country-code">
+            <option v-bind:value="'no'">Norge (+47)</option>
+            <option
+              v-for="country in countries"
+              :key="country.iso2"
+              v-bind:value="country.iso2"
+              >
+                {{ country.name }} (+{{ country.dialCode }})
+              </option>
           </select>
           <input
             v-model="phone"
@@ -31,27 +37,43 @@
     </div>
 </template>
 
-
-
 <script>
-import { ref } from "vue";
+import { ref, watch } from "vue"; // Ensure watch is imported
 import axios from "axios";
+import CountryCodes from "@/assets/CountryCodes.json";
 
 export default {
   setup() {
-    const countryCode = ref("+47"); 
+    const selectedCountryCode = ref("no"); // Default value for the selected country code
+    const countries = ref(CountryCodes); // Assuming CountryCodes is an array
     const phone = ref("");
     const password = ref("");
     const error = ref("");
-    const phone_number = ref("");
+
+    // Find the country object that matches the selectedCountryCode and return its dialCode
+    const getDialCode = (isoCode) => {
+      const country = countries.value.find(c => c.iso2 === isoCode);
+      return country ? `+${country.dialCode}` : '';
+    };
+
+    // Create a computed ref for the dial code
+    const dialCode = ref(getDialCode(selectedCountryCode.value));
+
+    // Watch for changes on the selectedCountryCode and update the dialCode accordingly
+    watch(selectedCountryCode, (newIsoCode) => {
+      dialCode.value = getDialCode(newIsoCode);
+    });
 
     const login = async () => {
+      // Concatenate the selected dial code with the phone number
+      const fullPhoneNumber = `${dialCode.value}${phone.value}`;
+
       try {
         const response = await axios({
           method: "post",
           url: "http://localhost:8000/auth/login/",
           data: {
-            phone_number: countryCode.value + phone.value,
+            phone_number: fullPhoneNumber,
             password: password.value,
           },
           withCredentials: true,
@@ -79,8 +101,9 @@ export default {
     }
 
     return {
-      phone_number,
-      countryCode,
+      countryCode: 'no',
+      countries,
+      selectedCountryCode,
       phone,
       password,
       error,
@@ -89,6 +112,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .login-box {
@@ -118,7 +142,7 @@ export default {
 .login-box select,
 .login-box input[type="tel"],
 .login-box input[type="password"] {
-  width: 90%;
+  width: 93%;
   padding: 15px; /* Increased padding */
   margin-bottom: 15px; /* Increased margin */
   border-radius: 5px;

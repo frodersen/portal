@@ -27,6 +27,6 @@ export default {
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background-color: #b5c4d4;
+  background-color: #1a202c;
 }
 </style>
