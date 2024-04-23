@@ -1,12 +1,10 @@
 <template>
-  <div class="login-page">
     <div class="login-box">
-      <h1>NTNUI PORTAL</h1>
       <form @submit.prevent="login">
         <!-- Country code and phone input container -->
         <div class="input-group">
           <select v-model="countryCode" id="countryCode" class="country-code">
-            <option value="+47">Norge (+47)</option>
+            <option value="+47">+47</option>
             <!-- other country options -->
           </select>
           <input
@@ -17,7 +15,7 @@
             placeholder="Telefonnummer"
           />
         </div>
-        <label for="password">PASSORD</label>
+        <label for="password"></label>
         <input
           v-model="password"
           id="password"
@@ -31,7 +29,6 @@
         </div>
       </form>
     </div>
-  </div>
 </template>
 
 
@@ -94,21 +91,14 @@ export default {
 </script>
 
 <style scoped>
-.login-page {
-  background-color: #4b6b8b; /* Adjusted to match the blue background */
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .login-box {
-  background-color: #ffffff; /* White background for the form box */
+  background-color: transparent;
   padding: 40px;
   border-radius: 10px; /* Slightly more rounded corners */
-  width: 340px; /* Increased width */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft box shadow */
+  width: auto; /* Increased width */
   color: #2c3e50; /* Darker text color */
+  display: flex;  flex-direction: column;
+  align-items: flex-end; /* Align children to the right */
 }
 
 .login-box h1 {
@@ -128,7 +118,7 @@ export default {
 .login-box select,
 .login-box input[type="tel"],
 .login-box input[type="password"] {
-  width: 100%;
+  width: 90%;
   padding: 15px; /* Increased padding */
   margin-bottom: 15px; /* Increased margin */
   border-radius: 5px;
@@ -161,10 +151,6 @@ export default {
   transition: background-color 0.3s; /* Transition for a hover effect */
 }
 
-.login-box button[type="submit"]:hover {
-  background-color: #0056b3; /* Darker blue on hover */
-}
-
 .login-box p {
   text-align: center;
   margin-top: 20px;
@@ -178,6 +164,11 @@ export default {
 
 .login-box p a:hover {
   text-decoration: underline; /* Underline on hover */
+}
+
+.login-box .links {
+  text-align: center;
+  margin-top: 20px; /* Increased margin */
 }
 
 .error-message {
