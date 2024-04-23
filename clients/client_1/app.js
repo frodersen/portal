@@ -56,6 +56,11 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get("/logout", (req, res) => {
+  res.clearCookie("access_token");
+  res.redirect("/");
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
