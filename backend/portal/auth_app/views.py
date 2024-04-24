@@ -18,6 +18,9 @@ from django.http import HttpResponse
 from rest_framework import views, status
 from rest_framework.response import Response
 import base64
+
+logger = logging.getLogger(__name__)
+
 class LoginView(views.APIView):
     def post(self, request, *args, **kwargs):
         phone_number = request.data.get('phone_number')
@@ -32,15 +35,18 @@ class LoginView(views.APIView):
             f'{settings.NTNUI_DEV_API_URL}/token/',
             data=payload,
         )
+        logger.info(f"Login attempt for : {phone_number}")
 
         if response.status_code == 401:
+            logger.warning(f"Unauthorized login attempt for : {phone_number}")
             return Response(response.json(), status=status.HTTP_401_UNAUTHORIZED) 
 
         if response.status_code == 200:
-
+            logger.info(f"Successful login : {phone_number}")
             # Create cookie with token av value
             access_token = response.json()['access']
-
+            
+            
             cookie_response = Response(access_token, status=status.HTTP_200_OK)
             cookie_response.set_cookie(
                 'access_token',
@@ -51,3 +57,7 @@ class LoginView(views.APIView):
                 samesite="Lax",
             )
             return cookie_response
+        
+        # Log unexpected server responses
+        logger.error(f"Unexpected response for phone number {phone_number}: {response.status_code}")
+        return Response({"detail": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
