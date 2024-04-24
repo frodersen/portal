@@ -1,27 +1,28 @@
 <template>
-    <div class="login-box">
-      <form @submit.prevent="login">
-        <!-- Country code and phone input container -->
-        <div class="input-group">
-          <select v-model="countryCode" class="country-code">
-            <option v-bind:value="'no'">Norge (+47)</option>
-            <option
-              v-for="country in countries"
-              :key="country.iso2"
-              v-bind:value="country.iso2"
-              >
-                {{ country.name }} (+{{ country.dialCode }})
-              </option>
-          </select>
-          <input
-            v-model="phone"
-            id="phone"
-            type="tel"
-            class="phone-number"
-            placeholder="Telefonnummer"
-          />
-        </div>
-        <label for="password"></label>
+  <div class="login-box">
+    <form @submit.prevent="login">
+      <!-- Country code and phone input container -->
+      <div class="input-group">
+        <select v-model="countryCode" class="country-code">
+          <option v-bind:value="'no'">Norge (+47)</option>
+          <option
+            v-for="country in countries"
+            :key="country.iso2"
+            v-bind:value="country.iso2"
+          >
+            {{ country.name }} (+{{ country.dialCode }})
+          </option>
+        </select>
+        <input
+          v-model="phone"
+          id="phone"
+          type="tel"
+          class="phone-number"
+          placeholder="Telefonnummer"
+        />
+      </div>
+      <!-- Password input container -->
+      <div class="input-group">
         <input
           v-model="password"
           id="password"
@@ -29,13 +30,20 @@
           class="password-input"
           placeholder="Passord"
         />
-        <button type="submit" class="login-button">LOGG INN</button>
-        <div class="links">
-          <a href="#">GLEMT PASSORD</a> | <a href="#">AKTIVER BRUKER</a>
+      </div>
+      <button type="submit" class="login-button">LOGG INN</button>
+      <div class="links-wrapper">
+        <div class="link">
+          <a href="#">Forgot Password</a>
         </div>
-      </form>
-    </div>
+        <div class="link">
+          <a href="#">Activate user</a>
+        </div>
+      </div>
+    </form>
+  </div>
 </template>
+
 
 <script>
 import { ref, watch } from "vue"; // Ensure watch is imported
@@ -115,6 +123,9 @@ export default {
 
 
 <style scoped>
+.login-box{
+width: 300px;
+}
 .login-box {
   background-color: transparent;
   padding: 40px;
@@ -129,7 +140,7 @@ export default {
   text-align: center;
   margin-bottom: 30px; /* More space below the heading */
   color: #000; /* Black color for the text */
-  font-size: 24px; /* Larger font size */
+  font-size: 15px; /* Larger font size */
 }
 
 .login-box label {
@@ -200,6 +211,7 @@ export default {
   text-align: center;
 }
 .input-group {
+  width: 300px;
   display: flex;
   justify-content: space-between; /* Adjust as needed */
   margin-bottom: 15px; /* Increased margin */
@@ -208,10 +220,34 @@ export default {
 .country-code {
   flex: 1;
   margin-right: 5px; /* Spacing between select and input */
+  font-size:x-small;
 }
 
 .phone-number {
   flex: 3;
 }
 
+
+.links-wrapper {
+  display: flex;               /* Aligns children in a row */
+  justify-content: space-evenly; /* Distributes space evenly around items */
+  align-items: center;         /* Aligns items vertically in the center */
+  margin-top: 20px;            /* Space above the link section */
+}
+
+.link {
+  padding: 5px 15px; 
+  border: #d3d3d3 solid 2px ;  
+  margin-right: 5px;   
+  border-radius: 10px;     
+}
+
+.link a {
+  color: #d3d3d3;
+  text-decoration: none;
+}
+
+.link a:hover {
+  text-decoration: underline;
+}
 </style>
