@@ -1,16 +1,16 @@
 <template>
   <div id="app">
-    <LoginForm />
+    <LoginPage />
   </div>
 </template>
 
 <script>
-import LoginForm from './components/LoginForm.vue'
+import LoginPage from './views/LoginPage.vue';
 
 export default {
   name: 'App',
   components: {
-    LoginForm
+    LoginPage
   }
 }
 </script>
@@ -21,7 +21,12 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #1a202c;
 }
 </style>
