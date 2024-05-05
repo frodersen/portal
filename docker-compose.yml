@@ -1,0 +1,32 @@
+services:
+  backend:
+    container_name: backend
+    build: ./backend/portal
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/portal:/usr/src/app
+
+  client_1:
+    container_name: client_1
+    build: ./clients/client_1
+    ports:
+      - "3001:3001"
+
+  client_2:
+    container_name: client_2
+    build: ./clients/client_2
+    ports:
+      - "3002:3002"
+
+  client_3:
+    container_name: client_3
+    build: ./clients/client_3
+    ports:
+      - "3003:3003"
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    ports:
+      - "8080:8080"
