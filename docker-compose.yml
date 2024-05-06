@@ -1,11 +1,11 @@
 services:
   backend:
     container_name: backend
-    build: ./backend/portal
+    build: ./backend/
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/portal:/usr/src/app
+      - ./backend:/usr/src/app
 
   client_1:
     container_name: client_1
