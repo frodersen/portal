@@ -1,7 +1,6 @@
 <template>
   <div class="login-box">
     <form @submit.prevent="login">
-      <!-- Country code and phone input container -->
       <div class="input-group">
         <select v-model="countryCode" class="country-code">
           <option v-bind:value="'no'">Norge (+47)</option>
@@ -21,7 +20,6 @@
           placeholder="Telefonnummer"
         />
       </div>
-      <!-- Password input container -->
       <div class="input-group">
         <input
           v-model="password"
@@ -31,6 +29,11 @@
           placeholder="Passord"
         />
       </div>
+
+      <div v-show="isError" class="error-message">
+        {{ error }}
+      </div>
+
       <button type="submit" class="login-button">LOGG INN</button>
       <div class="links-wrapper">
         <div class="link">
@@ -45,36 +48,32 @@
 </template>
 
 <script>
-import { ref, watch } from "vue"; // Ensure watch is imported
+import { ref, watch } from "vue";
 import axios from "axios";
 import CountryCodes from "@/assets/CountryCodes.json";
 
 export default {
   setup() {
-    const selectedCountryCode = ref("no"); // Default value for the selected country code
-    const countries = ref(CountryCodes); // Assuming CountryCodes is an array
+    const selectedCountryCode = ref("no");
+    const countries = ref(CountryCodes);
     const phone = ref("");
     const password = ref("");
     const error = ref("");
+    const isError = ref(false);
 
-    // Find the country object that matches the selectedCountryCode and return its dialCode
     const getDialCode = (isoCode) => {
       const country = countries.value.find((c) => c.iso2 === isoCode);
       return country ? `+${country.dialCode}` : "";
     };
 
-    // Create a computed ref for the dial code
     const dialCode = ref(getDialCode(selectedCountryCode.value));
 
-    // Watch for changes on the selectedCountryCode and update the dialCode accordingly
     watch(selectedCountryCode, (newIsoCode) => {
       dialCode.value = getDialCode(newIsoCode);
     });
 
     const login = async () => {
-      // Concatenate the selected dial code with the phone number
       const fullPhoneNumber = `${dialCode.value}${phone.value}`;
-
       try {
         const response = await axios({
           method: "post",
@@ -88,7 +87,9 @@ export default {
         });
 
         if (response.status === 401) {
-          error.value = "Unauthorized, incorrect credentials";
+          error.value = "Feil telefonnummer eller passord";
+          isError.value = true;
+          setTimeout(() => (isError.value = false), 5000);
           return;
         }
 
@@ -98,6 +99,8 @@ export default {
         }
       } catch (err) {
         error.value = "Server error or network issue";
+        isError.value = true;
+        setTimeout(() => (isError.value = false), 5000);
         console.error("Login error:", err);
       }
     };
@@ -108,12 +111,12 @@ export default {
     }
 
     return {
-      countryCode: "no",
+      countryCode: selectedCountryCode,
       countries,
-      selectedCountryCode,
       phone,
       password,
       error,
+      isError,
       login,
     };
   },
@@ -127,44 +130,44 @@ export default {
 .login-box {
   background-color: transparent;
   padding: 40px;
-  border-radius: 10px; /* Slightly more rounded corners */
-  width: auto; /* Increased width */
-  color: #2c3e50; /* Darker text color */
+  border-radius: 10px;
+  width: auto;
+  color: #2c3e50;
   display: flex;
   flex-direction: column;
-  align-items: flex-end; /* Align children to the right */
+  align-items: flex-end;
 }
 
 .login-box h1 {
   text-align: center;
-  margin-bottom: 30px; /* More space below the heading */
-  color: #000; /* Black color for the text */
-  font-size: 15px; /* Larger font size */
+  margin-bottom: 30px;
+  color: #000;
+  font-size: 15px;
 }
 
 .login-box label {
   display: block;
   margin-bottom: 5px;
-  color: #000; /* Black color for the text */
-  font-weight: bold; /* Bold font for labels */
+  color: #000;
+  font-weight: bold;
 }
 
 .login-box select,
 .login-box input[type="tel"],
 .login-box input[type="password"] {
   width: 93%;
-  padding: 15px; /* Increased padding */
-  margin-bottom: 15px; /* Increased margin */
+  padding: 15px;
+  margin-bottom: 15px;
   border-radius: 5px;
-  border: 1px solid #d3d3d3; /* Lighter border color */
-  background: #f7f7f7; /* Light grey background */
-  color: #333; /* Dark grey text */
+  border: 1px solid #d3d3d3;
+  background: #f7f7f7;
+  color: #333;
 }
 
 .login-box select {
-  -webkit-appearance: none; /* Removes default styling of select on WebKit browsers */
-  -moz-appearance: none; /* Removes default styling of select on Firefox */
-  appearance: none; /* Removes default arrow from select */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
   background-image: url('data:image/svg+xml;utf8,<svg fill="#333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Add custom arrow */
   background-repeat: no-repeat;
   background-position-x: 95%;
@@ -172,17 +175,17 @@ export default {
 }
 
 .login-box button[type="submit"] {
-  background-color: #007bff; /* Matching the blue button color */
+  background-color: #007bff;
   color: #fff;
-  padding: 15px; /* Increased padding */
-  margin-top: 10px; /* Added margin to the top */
+  padding: 15px;
+  margin-top: 10px;
   border: none;
   border-radius: 5px;
   width: 100%;
   cursor: pointer;
-  font-size: 16px; /* Larger font size */
-  font-weight: bold; /* Bold font */
-  transition: background-color 0.3s; /* Transition for a hover effect */
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
 }
 
 .login-box p {
@@ -193,32 +196,32 @@ export default {
 .login-box p a {
   color: #007bff;
   text-decoration: none;
-  margin: 0 5px; /* Spacing between links */
+  margin: 0 5px;
 }
 
 .login-box p a:hover {
-  text-decoration: underline; /* Underline on hover */
+  text-decoration: underline;
 }
 
 .login-box .links {
   text-align: center;
-  margin-top: 20px; /* Increased margin */
+  margin-top: 20px;
 }
 
 .error-message {
-  color: #ff0000; /* Red color for error messages */
+  color: #ff0000;
   text-align: center;
 }
 .input-group {
   width: 300px;
   display: flex;
-  justify-content: space-between; /* Adjust as needed */
-  margin-bottom: 15px; /* Increased margin */
+  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
 .country-code {
   flex: 1;
-  margin-right: 5px; /* Spacing between select and input */
+  margin-right: 5px;
   font-size: x-small;
 }
 
@@ -227,10 +230,10 @@ export default {
 }
 
 .links-wrapper {
-  display: flex; /* Aligns children in a row */
-  justify-content: space-evenly; /* Distributes space evenly around items */
-  align-items: center; /* Aligns items vertically in the center */
-  margin-top: 20px; /* Space above the link section */
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 20px;
 }
 
 .link {
@@ -247,5 +250,11 @@ export default {
 
 .link a:hover {
   text-decoration: underline;
+}
+
+.error-message {
+  color: #ff0000;
+  text-align: center;
+  margin-top: 10px;
 }
 </style>
