@@ -44,7 +44,6 @@
   </div>
 </template>
 
-
 <script>
 import { ref, watch } from "vue"; // Ensure watch is imported
 import axios from "axios";
@@ -60,8 +59,8 @@ export default {
 
     // Find the country object that matches the selectedCountryCode and return its dialCode
     const getDialCode = (isoCode) => {
-      const country = countries.value.find(c => c.iso2 === isoCode);
-      return country ? `+${country.dialCode}` : '';
+      const country = countries.value.find((c) => c.iso2 === isoCode);
+      return country ? `+${country.dialCode}` : "";
     };
 
     // Create a computed ref for the dial code
@@ -109,7 +108,7 @@ export default {
     }
 
     return {
-      countryCode: 'no',
+      countryCode: "no",
       countries,
       selectedCountryCode,
       phone,
@@ -121,10 +120,9 @@ export default {
 };
 </script>
 
-
 <style scoped>
-.login-box{
-width: 300px;
+.login-box {
+  width: 300px;
 }
 .login-box {
   background-color: transparent;
@@ -132,7 +130,8 @@ width: 300px;
   border-radius: 10px; /* Slightly more rounded corners */
   width: auto; /* Increased width */
   color: #2c3e50; /* Darker text color */
-  display: flex;  flex-direction: column;
+  display: flex;
+  flex-direction: column;
   align-items: flex-end; /* Align children to the right */
 }
 
@@ -220,26 +219,25 @@ width: 300px;
 .country-code {
   flex: 1;
   margin-right: 5px; /* Spacing between select and input */
-  font-size:x-small;
+  font-size: x-small;
 }
 
 .phone-number {
   flex: 3;
 }
 
-
 .links-wrapper {
-  display: flex;               /* Aligns children in a row */
+  display: flex; /* Aligns children in a row */
   justify-content: space-evenly; /* Distributes space evenly around items */
-  align-items: center;         /* Aligns items vertically in the center */
-  margin-top: 20px;            /* Space above the link section */
+  align-items: center; /* Aligns items vertically in the center */
+  margin-top: 20px; /* Space above the link section */
 }
 
 .link {
-  padding: 5px 15px; 
-  border: #d3d3d3 solid 2px ;  
-  margin-right: 5px;   
-  border-radius: 10px;     
+  padding: 5px 15px;
+  border: #d3d3d3 solid 2px;
+  margin-right: 5px;
+  border-radius: 10px;
 }
 
 .link a {
