@@ -16,3 +16,13 @@ node_modules/
 /temp
 /backup
 
+/node_modules
+/.env
+/logs
+*.log
+/dist
+
+# .gitignore
+myenv/
+venv/
+*.log
