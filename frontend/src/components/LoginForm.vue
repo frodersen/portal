@@ -78,7 +78,7 @@ export default {
       try {
         const response = await axios({
           method: "post",
-          url: "http://localhost:8000/auth/login/",
+          url: "http://localhost:8000/login/",
           data: {
             phone_number: fullPhoneNumber,
             password: password.value,
