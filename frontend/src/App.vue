@@ -5,17 +5,26 @@
 </template>
 
 <script>
-import LoginPage from './views/LoginPage.vue';
+import LoginPage from "./views/LoginPage.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    LoginPage
-  }
-}
+    LoginPage,
+  },
+};
 </script>
 
 <style>
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -25,8 +34,9 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
   background-color: #1a202c;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper">
-      <div class = "logo-container">
-        <img src="@/assets/ntnui.svg" class="img" alt="ntnui-logo" />
-        <h1 class="title">PORTAL</h1>
-      </div>
+    <div class="logo-container">
+      <img src="@/assets/ntnui.svg" class="img" alt="ntnui-logo" />
+      <h1 class="title">PORTAL</h1>
+    </div>
     <div key="login-form" class="formWrapper">
       <login-form />
     </div>
@@ -11,13 +11,13 @@
 </template>
 
 <script>
-import LoginForm from '@/components/LoginForm.vue';
+import LoginForm from "@/components/LoginForm.vue";
 
 export default {
-  name: 'LoginPage',
+  name: "LoginPage",
   components: {
-    LoginForm
-  }
+    LoginForm,
+  },
 };
 </script>
 
@@ -38,13 +38,14 @@ export default {
   flex-direction: column;
   justify-content: center;
   margin: 0.3125rem 0; /* Converted from rem(5) */
-  margin-bottom: 30px;  
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  margin-bottom: 30px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   color: rgb(255, 255, 255);
 }
 
 .formWrapper {
-  width: 340; 
+  width: 340;
 }
 
 @media (max-width: 599px) {
