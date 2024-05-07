@@ -1,57 +1,60 @@
 <template>
   <div class="login-box">
-    <form @submit.prevent="login">
-      <div class="input-group">
-        <select v-model="countryCode" class="country-code">
-          <option v-bind:value="'no'">Norge (+47)</option>
-          <option
-            v-for="country in countries"
-            :key="country.iso2"
-            v-bind:value="country.iso2"
-          >
-            {{ country.name }} (+{{ country.dialCode }})
-          </option>
-        </select>
-        <input
-          v-model="phone"
-          id="phone"
-          type="tel"
-          class="phone-number"
-          placeholder="Telefonnummer"
-        />
-      </div>
-      <div class="input-group">
-        <input
-          v-model="password"
-          id="password"
-          type="password"
-          class="password-input"
-          placeholder="Passord"
-        />
-      </div>
-
-      <div v-show="isError" class="error-message">
-        {{ error }}
-      </div>
-
-      <div v-if="showAuthenticatedMessage" class="auth-message">
-        <p>
-          Du er nå autentisert hos NTNUI! Nå kan du besøke andre tjenester til
-          NTNUI uten å logge inn!
-        </p>
-      </div>
-
-      <button type="submit" class="login-button">LOGG INN</button>
-
-      <div class="links-wrapper">
-        <div class="link">
-          <a href="#">Forgot Password</a>
+    <div v-if="!isAuthenticated">
+      <form @submit.prevent="login">
+        <div class="input-group">
+          <select v-model="countryCode" class="country-code">
+            <option v-bind:value="'no'">Norge (+47)</option>
+            <option
+              v-for="country in countries"
+              :key="country.iso2"
+              v-bind:value="country.iso2"
+            >
+              {{ country.name }} (+{{ country.dialCode }})
+            </option>
+          </select>
+          <input
+            v-model="phone"
+            id="phone"
+            type="tel"
+            class="phone-number"
+            placeholder="Telefonnummer"
+          />
         </div>
-        <div class="link">
-          <a href="#">Activate user</a>
+        <div class="input-group">
+          <input
+            v-model="password"
+            id="password"
+            type="password"
+            class="password-input"
+            placeholder="Passord"
+          />
         </div>
-      </div>
-    </form>
+
+        <div v-show="isError" class="error-message">
+          {{ error }}
+        </div>
+
+        <button type="submit" class="login-button">LOGG INN</button>
+
+        <div class="links-wrapper">
+          <div class="link">
+            <a href="#">Forgot Password</a>
+          </div>
+          <div class="link">
+            <a href="#">Activate user</a>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div v-if="isAuthenticated" class="auth-message">
+      <p>
+        Du er nå autentisert hos NTNUI! Nå kan du besøke andre tjenester til
+        NTNUI uten å logge inn!
+      </p>
+      <button @click="logout" class="logout-button">Logg Ut</button>
+    </div>
   </div>
 </template>
 
@@ -68,7 +71,7 @@ export default {
     const password = ref("");
     const error = ref("");
     const isError = ref(false);
-    const showAuthenticatedMessage = ref(false);
+    const isAuthenticated = ref(false);
 
     const getDialCode = (isoCode) => {
       const country = countries.value.find((c) => c.iso2 === isoCode);
@@ -113,13 +116,32 @@ export default {
         if (redirectUrl) {
           window.location.href = decodeURIComponent(redirectUrl);
         } else {
-          showAuthenticatedMessage.value = true;
+          isAuthenticated.value = true;
         }
       } catch (err) {
         error.value = "Server error or network issue";
         isError.value = true;
         setTimeout(() => (isError.value = false), 5000);
         console.error("Login error:", err);
+      }
+    };
+
+    const logout = async () => {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "http://localhost:8000/logout/",
+          withCredentials: true,
+          validateStatus: (status) => status < 500,
+        });
+
+        if (response.status === 200) {
+          isAuthenticated.value = false;
+        } else {
+          console.error("Logout failed with status:", response.status);
+        }
+      } catch (err) {
+        console.error("Logout failed:", err);
       }
     };
 
@@ -136,7 +158,8 @@ export default {
       error,
       isError,
       login,
-      showAuthenticatedMessage,
+      isAuthenticated,
+      logout,
     };
   },
 };
@@ -144,17 +167,16 @@ export default {
 
 <style scoped>
 .login-box {
-  width: 300px;
-}
-.login-box {
   background-color: transparent;
   padding: 40px;
   border-radius: 10px;
-  width: auto;
+  width: 300px;
+  max-width: 100%;
   color: #2c3e50;
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-box h1 {
@@ -174,7 +196,7 @@ export default {
 .login-box select,
 .login-box input[type="tel"],
 .login-box input[type="password"] {
-  width: 93%;
+  width: 100%;
   padding: 15px;
   margin-bottom: 15px;
   border-radius: 5px;
@@ -187,13 +209,13 @@ export default {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-image: url('data:image/svg+xml;utf8,<svg fill="#333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); /* Add custom arrow */
+  background-image: url('data:image/svg+xml;utf8,<svg fill="#333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
   background-repeat: no-repeat;
-  background-position-x: 95%;
-  background-position-y: 50%;
+  background-position: right 10px center;
 }
 
-.login-box button[type="submit"] {
+.login-box button[type="submit"],
+.logout-button {
   background-color: #007bff;
   color: #fff;
   padding: 15px;
@@ -207,7 +229,8 @@ export default {
   transition: background-color 0.3s;
 }
 
-.login-box p {
+.login-box p,
+.auth-message p {
   text-align: center;
   margin-top: 20px;
 }
@@ -215,76 +238,65 @@ export default {
 .login-box p a {
   color: #007bff;
   text-decoration: none;
-  margin: 0 5px;
 }
 
 .login-box p a:hover {
   text-decoration: underline;
 }
 
-.login-box .links {
+.links-wrapper,
+.error-message {
   text-align: center;
   margin-top: 20px;
 }
 
 .error-message {
   color: #ff0000;
-  text-align: center;
-}
-.input-group {
-  width: 300px;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15px;
-}
-
-.country-code {
-  flex: 1;
-  margin-right: 5px;
-  font-size: x-small;
-}
-
-.phone-number {
-  flex: 3;
-}
-
-.links-wrapper {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.link {
-  padding: 5px 15px;
-  border: #d3d3d3 solid 2px;
-  margin-right: 5px;
-  border-radius: 10px;
-}
-
-.link a {
-  color: #d3d3d3;
-  text-decoration: none;
-}
-
-.link a:hover {
-  text-decoration: underline;
-}
-
-.error-message {
-  color: #ff0000;
-  text-align: center;
-  margin-top: 10px;
   max-width: 300px;
   word-wrap: break-word;
 }
 
 .auth-message {
   padding: 20px;
-  text-align: center;
-  margin-top: 20px;
   background-color: #f4f4f4;
   border-radius: 5px;
   color: #2c3e50;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.country-code,
+.phone-number {
+  flex: 1;
+}
+
+.country-code {
+  margin-right: 10px;
+}
+
+.phone-number {
+  margin-left: 10px;
+}
+
+.link {
+  padding: 5px 15px;
+  border: 2px solid #d3d3d3;
+  border-radius: 10px;
+  margin-right: 5px;
+}
+
+.link a {
+  color: #d3d3d3;
+}
+
+.link a:hover {
+  text-decoration: underline;
 }
 </style>
