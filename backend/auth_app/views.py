@@ -57,7 +57,13 @@ class LoginView(views.APIView):
                 # domain='.ntnui.no'
             )
             return cookie_response
-        
+            
         # Log unexpected server responses
         logger.error(f"Unexpected response for phone number {phone_number}: {response.status_code}")
         return Response({"detail": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class LogoutView(views.APIView):
+    def post(self, request, *args, **kwargs):
+        response = HttpResponse("Logged out")
+        response.delete_cookie('access_token')
+        return response
