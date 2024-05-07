@@ -35,10 +35,14 @@
       </div>
 
       <div v-if="showAuthenticatedMessage" class="auth-message">
-        <p>Du er nå autentisert hos NTNUI! Nå kan du besøke andre tjenester til NTNUI uten å logge inn!</p>
+        <p>
+          Du er nå autentisert hos NTNUI! Nå kan du besøke andre tjenester til
+          NTNUI uten å logge inn!
+        </p>
       </div>
 
       <button type="submit" class="login-button">LOGG INN</button>
+
       <div class="links-wrapper">
         <div class="link">
           <a href="#">Forgot Password</a>
@@ -78,6 +82,13 @@ export default {
     });
 
     const login = async () => {
+      if (!phone.value.trim() || !password.value.trim()) {
+        error.value = "Både telefonnummer og passord må fylles inn.";
+        isError.value = true;
+        setTimeout(() => (isError.value = false), 5000);
+        return;
+      }
+
       const fullPhoneNumber = `${dialCode.value}${phone.value}`;
       try {
         const response = await axios({
@@ -98,12 +109,10 @@ export default {
           return;
         }
 
-        // Check if the redirect_url is present in the query params
         const redirectUrl = getQueryParam("redirect_url");
         if (redirectUrl) {
           window.location.href = decodeURIComponent(redirectUrl);
         } else {
-          // Show authenticated message if no redirect URL
           showAuthenticatedMessage.value = true;
         }
       } catch (err) {
@@ -127,7 +136,7 @@ export default {
       error,
       isError,
       login,
-      showAuthenticatedMessage
+      showAuthenticatedMessage,
     };
   },
 };
@@ -266,7 +275,10 @@ export default {
   color: #ff0000;
   text-align: center;
   margin-top: 10px;
+  max-width: 300px;
+  word-wrap: break-word;
 }
+
 .auth-message {
   padding: 20px;
   text-align: center;

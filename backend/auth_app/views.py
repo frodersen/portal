@@ -3,20 +3,12 @@ from rest_framework import views, status
 from rest_framework.response import Response
 import requests
 from django.conf import settings
-
 from django.http import JsonResponse
-from rest_framework import views, status
-from rest_framework.response import Response
-import requests
 from django.conf import settings
 from django.core.signing import Signer
-
 import json
 import urllib.parse
-from django.core.signing import Signer
 from django.http import HttpResponse
-from rest_framework import views, status
-from rest_framework.response import Response
 import base64
 
 logger = logging.getLogger(__name__)
@@ -37,10 +29,17 @@ class LoginView(views.APIView):
         )
         logger.info(f"Login attempt for : {phone_number}")
 
+        # Bad request
+        if response.status_code == 400:
+            logger.warning(response.json())
+            return Response(response.json(), status=status.HTTP_400_BAD_REQUEST)
+
+        # Unauthorized
         if response.status_code == 401:
             logger.warning(f"Unauthorized login attempt for : {phone_number}")
             return Response(response.json(), status=status.HTTP_401_UNAUTHORIZED) 
 
+        # Ok
         if response.status_code == 200:
             logger.info(f"Successful login : {phone_number}")
             # Create cookie with token av value
@@ -55,6 +54,7 @@ class LoginView(views.APIView):
                 httponly=True,
                 secure=True,
                 samesite="Lax",
+                # domain='.ntnui.no'
             )
             return cookie_response
         
