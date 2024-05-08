@@ -4,15 +4,13 @@ from rest_framework.response import Response
 import requests
 from django.conf import settings
 from django.http import HttpResponse
+from .api_specs import login_schema, logout_schema, verify_schema
 
 # Setting up logging for the module
 logger = logging.getLogger(__name__)
 
 class LoginView(views.APIView):
-    """
-    Handles POST requests for user login.
-    Validates user credentials with an external service and issues a cookie with an access token upon successful authentication.
-    """
+    @login_schema
     def post(self, request, *args, **kwargs):
         # Extracting phone number and password from the POST request data
         phone_number = request.data.get('phone_number')
@@ -66,9 +64,7 @@ class LoginView(views.APIView):
         return Response({"detail": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LogoutView(views.APIView):
-    """
-    Handles POST requests for user logout by removing the access token cookie.
-    """
+    @logout_schema
     def post(self, request, *args, **kwargs):
         # Clear the access token cookie and return a logout message
         response = HttpResponse("Logged out")
@@ -76,9 +72,7 @@ class LogoutView(views.APIView):
         return response
 
 class VerifyView(views.APIView):
-    """
-    Handles POST requests to verify if the provided access token is valid.
-    """
+    @verify_schema
     def post(self, request, *args, **kwargs):
         # Retrieve the access token from the cookie
         accessToken = request.COOKIES.get('access_token')
