@@ -1,0 +1,24 @@
+name: Build CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and start services using Docker Compose
+      run: docker-compose up --build -d
+
+    - name: Check container health
+      run: |
+        sleep 10
+        docker ps
+
+    - name: Clean up
+      run: docker-compose down
