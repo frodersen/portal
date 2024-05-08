@@ -1,6 +1,10 @@
 <template>
   <div class="login-box">
-    <div v-if="!isAuthenticated">
+    <div v-if="isLoading">
+      <p>Loading...</p>
+    </div>
+
+    <div v-else-if="!isAuthenticated">
       <form @submit.prevent="login">
         <div class="input-group">
           <select v-model="countryCode" class="country-code">
@@ -48,7 +52,7 @@
       </form>
     </div>
 
-    <div v-if="isAuthenticated" class="auth-message">
+    <div v-else class="auth-message">
       <p>
         Du er nå autentisert hos NTNUI! Nå kan du besøke andre tjenester til
         NTNUI uten å logge inn!
@@ -59,7 +63,7 @@
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { ref, watch, onMounted } from "vue";
 import axios from "axios";
 import CountryCodes from "@/assets/CountryCodes.json";
 
@@ -72,6 +76,7 @@ export default {
     const error = ref("");
     const isError = ref(false);
     const isAuthenticated = ref(false);
+    const isLoading = ref(true);
 
     const getDialCode = (isoCode) => {
       const country = countries.value.find((c) => c.iso2 === isoCode);
@@ -123,6 +128,8 @@ export default {
         isError.value = true;
         setTimeout(() => (isError.value = false), 5000);
         console.error("Login error:", err);
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -142,6 +149,8 @@ export default {
         }
       } catch (err) {
         console.error("Logout failed:", err);
+      } finally {
+        isLoading.value = false;
       }
     };
 
@@ -149,6 +158,27 @@ export default {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
+
+    const checkAuthenticationStatus = async () => {
+      try {
+        const response = await axios({
+          method: "post",
+          url: "http://localhost:8000/verify/",
+          withCredentials: true,
+          validateStatus: (status) => status < 500,
+        });
+
+        if (response.status === 200) {
+          isAuthenticated.value = true;
+        }
+      } catch (err) {
+        console.error("Error:", err);
+      } finally {
+        isLoading.value = false;
+      }
+    };
+
+    onMounted(checkAuthenticationStatus);
 
     return {
       countryCode: selectedCountryCode,
@@ -160,6 +190,7 @@ export default {
       login,
       isAuthenticated,
       logout,
+      isLoading,
     };
   },
 };

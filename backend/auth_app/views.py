@@ -67,3 +67,33 @@ class LogoutView(views.APIView):
         response = HttpResponse("Logged out")
         response.delete_cookie('access_token')
         return response
+
+class VerifyView(views.APIView):
+        def post(self, request, *args, **kwargs):
+            accessToken = cookies = request.COOKIES.get('access_token')
+            
+            if (not accessToken):
+                logger.error(f"No token were given.")
+                return Response({"detail": "No token given."}, status=status.HTTP_400_BAD_REQUEST)
+
+            payload = {
+            'token': accessToken,
+            }
+
+            response = requests.post(
+            f'{settings.NTNUI_DEV_API_URL}/token/verify/',
+            data=payload,
+            )
+
+            # Invalid token
+            if (response.status_code == 401):
+                logger.info(response.json())
+                return Response(response.json(), status=status.HTTP_401_UNAUTHORIZED) 
+
+            if (response.status_code == 200):
+                logger.info(response.json())
+                return Response(response.json(), status=status.HTTP_200_OK) 
+
+            # Log unexpected server responses
+            logger.error(f"Unexpected error when validating token: {response.status_code}")
+            return Response({"detail": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
