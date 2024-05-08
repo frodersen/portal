@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.contenttypes',
     'django.contrib.auth',
+    'drf_yasg',
 ]
 
 
@@ -83,3 +84,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Replace with actual API URL
 NTNUI_DEV_API_URL = 'https://dev.api.ntnui.no'
+
+# Removes Swagger buttons 'Django Login' and 'Authorize' (useless since db is removed).
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': None
+}
