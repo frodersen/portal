@@ -1,86 +1,68 @@
 # SSO Project
 
-Upon completion, this project will have developed a Proof-of-Concept consisting of a central Single Sign-On (SSO) application and a sample application to demonstrate the integration process. The final product is intended to be put into production and used starting from autumn 2024.
+## Overview
 
-## Getting Started
+This project implements a robust Single Sign-On (SSO) solution that facilitates centralized authentication across multiple client applications. It consists of a Django-based backend, a Vue.js frontend, and multiple Express.js clients, all containerized using Docker.
 
-This guide will help you get a copy of the project up and running on your local machine for development and testing purposes.
+## Quick Start
+
+Follow these instructions to get the project up and running on your local machine for development and testing purposes.
 
 ### Prerequisites
 
-Before you begin, ensure you have the following tools installed:
+- **Docker**: Ensure Docker and Docker Compose are installed on your system. For installation instructions, refer to [Docker's official documentation](https://docs.docker.com/get-docker/).
 
-- Node.js and npm: Download and install from the official Node.js website (https://nodejs.org/).
-- Python: Download and install from the official Python website (https://www.python.org/).
+### Installation
 
-### Installing and Running the Project
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-github-username/sso-project.git
+   cd sso-project
+   ```
 
-Follow these step-by-step instructions to set up your development environment:
+2. **Build and Run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
 
-1. Clone the repository:
-    ```
-    git clone https://github.com/frodersen/portal
-    ```
+## Services
 
-2. Set up the Python virtual environment for the backend:
-    - Open a command prompt or terminal.
-    - Navigate to the backend directory of your project:
-      ```
-      cd portal/backend
-      ```
-    - Create the virtual environment:
-      ```
-      python -m venv myenv
-      ```
-    - Activate the virtual environment:
-      ```
-      .\myenv\Scripts\activate
-      ```
+- **Backend**: Accessible at http://localhost:8000. Handles all backend logic and authentication.
+- **Frontend**: Accessible at http://localhost:8080. Provides the user interface for authentication.
+- **Clients**: Each client application can be accessed through its specific port as configured in the Docker Compose file.
 
-3. Set up the Backend:
-    - Ensure you are in the backend directory where manage.py is located:
-      ```
-      cd portal
-      ```
-    - Start the Django development server:
-      ```
-      python manage.py runserver
-      ```
+## Development
 
-4. Set up the Frontend:
-    - Open a new command prompt or terminal window.
-    - Navigate to the frontend directory:
-      ```
-      cd ../frontend
-      ```
-    - Install dependencies including Axios:
-      ```
-      npm install
-      npm install axios
-      ```
-    - Start the frontend development server:
-      ```
-      npm run serve
-      ```
+Here's how to set up your development environment:
 
-5. Set up a Client:
-    - Open a new command prompt or terminal window.
-    - Navigate to the client's directory:
-      ```
-      cd ../clients/client_1
-      ```
-    - Install necessary dependencies:
-      ```
-      npm install
-      ```
-    - Start the client application:
-      ```
-      node app.js
-      ```
+### Backend
 
-### Built With
+Navigate to the backend directory and run:
 
-- Vue.js - The web framework used for the frontend (https://vuejs.org/)
-- Django - The web framework used for the backend (https://www.djangoproject.com/)
-- Express.js - The web framework used for the clients (https://expressjs.com/)
+```bash
+cd backend
+docker build -t sso-backend .
+docker run -d -p 8000:8000 sso-backend
+```
+
+### Frontend
+
+For the frontend, navigate to its directory and execute:
+
+```bash
+cd frontend
+docker build -t sso-frontend .
+docker run -d -p 8080:8080 sso-frontend
+```
+
+### Clients
+
+Set up each client by navigating to their respective directories:
+
+```bash
+cd clients/client_1
+docker build -t client-1 .
+docker run -d -p 3000:3000 client-1
+```
+
 
