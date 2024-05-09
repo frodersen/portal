@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Unauthorized</title>
-  </head>
-  <body>
-    <h1>
-      You are not authorized to access <%= process.env.CLIENT_GROUP_NAME %>.
-    </h1>
-  </body>
+</head>
+<body>
+    <h1>You are not authorized to access <%= process.env.CLIENT_GROUP_NAME %>.</h1>
+    <button onclick="goBack()">Go Back</button>
+
+    <script>
+        function goBack() {
+            window.history.back(); // Navigates back to the previous page
+        }
+    </script>
+</body>
 </html>
+
