@@ -89,3 +89,10 @@ NTNUI_DEV_API_URL = 'https://dev.api.ntnui.no'
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': None
 }
+# For testing purposes
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
