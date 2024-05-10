@@ -4,6 +4,7 @@ from rest_framework import status
 from unittest.mock import patch
 import json
 
+# Unit tests for the authentication views
 class AuthenticationViewTests(TestCase):
     def setUp(self):
         self.client = Client()
