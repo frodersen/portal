@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1715367715388" clover="3.2.0">
-  <project timestamp="1715367715389" name="All files">
+<coverage generated="1715370534544" clover="3.2.0">
+  <project timestamp="1715370534544" name="All files">
     <metrics statements="120" coveredstatements="45" conditionals="32" coveredconditionals="2" methods="23" coveredmethods="5" elements="175" coveredelements="52" complexity="0" loc="120" ncloc="120" packages="3" files="3" classes="3"/>
     <package name="src">
       <metrics statements="13" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="App.vue" path="C:\Users\jolse\source\repos\baclor\portal\frontend\src\App.vue">
+      <file name="App.vue" path="C:\Users\Frode\Documents\Bachelor\portal\frontend\src\App.vue">
         <metrics statements="13" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>
@@ -23,7 +23,7 @@
     </package>
     <package name="src.components">
       <metrics statements="90" coveredstatements="45" conditionals="32" coveredconditionals="2" methods="21" coveredmethods="5"/>
-      <file name="LoginForm.vue" path="C:\Users\jolse\source\repos\baclor\portal\frontend\src\components\LoginForm.vue">
+      <file name="LoginForm.vue" path="C:\Users\Frode\Documents\Bachelor\portal\frontend\src\components\LoginForm.vue">
         <metrics statements="90" coveredstatements="45" conditionals="32" coveredconditionals="2" methods="21" coveredmethods="5"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
@@ -119,7 +119,7 @@
     </package>
     <package name="src.views">
       <metrics statements="17" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
-      <file name="LoginPage.vue" path="C:\Users\jolse\source\repos\baclor\portal\frontend\src\views\LoginPage.vue">
+      <file name="LoginPage.vue" path="C:\Users\Frode\Documents\Bachelor\portal\frontend\src\views\LoginPage.vue">
         <metrics statements="17" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
         <line num="3" count="0" type="stmt"/>
         <line num="4" count="0" type="stmt"/>

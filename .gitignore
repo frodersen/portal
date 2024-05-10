@@ -21,6 +21,8 @@ node_modules/
 /logs
 *.log
 /dist
+/coverage
+/db.sqlite3
 
 # .gitignore
 myenv/
