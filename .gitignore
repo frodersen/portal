@@ -30,3 +30,5 @@ venv/
 *.log
 
 coverage/
+
+.coverage

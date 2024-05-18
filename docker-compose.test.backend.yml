@@ -1,0 +1,8 @@
+services:
+  backend-tests:
+    container_name: backend-tests
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./backend:/app
