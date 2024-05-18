@@ -1,8 +1,7 @@
+version: "3.8"
 services:
   frontend-tests:
-    container_name: frontend-tests
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.test
+    build: ./frontend
     volumes:
       - ./frontend:/app
+      - /app/node_modules
