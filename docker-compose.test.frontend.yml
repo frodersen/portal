@@ -1,0 +1,8 @@
+services:
+  frontend-tests:
+    container_name: frontend-tests
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.test
+    volumes:
+      - ./frontend:/app
