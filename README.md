@@ -14,55 +14,25 @@ Follow these instructions to get the project up and running on your local machin
 
 ### Installation
 
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/your-github-username/sso-project.git
-   cd sso-project
-   ```
-
-2. **Build and Run with Docker Compose**
-   ```bash
-   docker-compose up --build
-   ```
-
-## Services
-
-- **Backend**: Accessible at http://localhost:8000. Handles all backend logic and authentication.
-- **Frontend**: Accessible at http://localhost:8080. Provides the user interface for authentication.
-- **Clients**: Each client application can be accessed through its specific port as configured in the Docker Compose file.
-
-## Development
-
-Here's how to set up your development environment:
-
-### Backend
-
-Navigate to the backend directory and run:
-
 ```bash
-cd backend
-docker build -t sso-backend .
-docker run -d -p 8000:8000 sso-backend
+git clone https://github.com/frodersen/portal.git
+cd portal
 ```
 
-### Frontend
-
-For the frontend, navigate to its directory and execute:
+### Run project
 
 ```bash
-cd frontend
-docker build -t sso-frontend .
-docker run -d -p 8080:8080 sso-frontend
+docker-compose up --build
 ```
 
-### Clients
-
-Set up each client by navigating to their respective directories:
+### Run frontend tests
 
 ```bash
-cd clients/client_1
-docker build -t client-1 .
-docker run -d -p 3000:3000 client-1
+docker-compose -f docker-compose.test.frontend.yml up --build
 ```
 
+### Run backend tests
 
+```bash
+docker-compose -f docker-compose.test.backend.yml up --build
+```
