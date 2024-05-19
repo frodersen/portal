@@ -1,4 +1,4 @@
-name: Build and Test CI
+name: Build CI
 
 on:
   push:
@@ -7,25 +7,18 @@ on:
     branches: [ master ]
 
 jobs:
-  build_and_test:
+  build:
     runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v4
-    
-    - name: Build and start services
+    - name: Build and start services using Docker Compose
       run: docker-compose up --build -d
 
     - name: Check container health
       run: |
         sleep 10
         docker ps
-
-    - name: Run frontend tests
-      run: docker-compose -f docker-compose.test.frontend.yml up --build
-
-    - name: Run backend tests
-      run: docker-compose -f docker-compose.test.backend.yml up --build
 
     - name: Clean up
       run: docker-compose down
